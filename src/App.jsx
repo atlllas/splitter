@@ -58,12 +58,12 @@ function App() {
       )}
       {extractedLink && (
         <div>
-          <a href={extractedLink} download="fragment.pdf">
+          <button class="fragments" href={extractedLink} download="fragment.pdf">
             Download Fragment
-          </a>
-          <a href={remainingLink} download="whole.pdf">
+          </button>
+          <button class="fragments" href={remainingLink} download="whole.pdf">
             Download Whole
-          </a>
+          </button>
         </div>
       )}
     </div>
