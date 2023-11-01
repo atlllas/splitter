@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import './App.css';
+
 function App() {
   const [pdfFile, setPdfFile] = useState(null);
   const [numPagesToExtract, setNumPagesToExtract] = useState(7);
@@ -15,14 +16,19 @@ function App() {
   };
 
   const extractPages = async () => {
+    if (!pdfFile) {
+      return;
+    }
+
     const pdfBuffer = await pdfFile.arrayBuffer();
     const pdfDoc = await PDFDocument.load(pdfBuffer);
 
+    const totalPages = pdfDoc.getPageCount();
+    const pagesToExtract = Math.min(numPagesToExtract, totalPages);
+
+    // Create new instances of extractedPdf and remainingPdf
     const extractedPdf = await PDFDocument.create();
     const remainingPdf = await PDFDocument.create();
-
-    const totalPages = pdfDoc.getPageCount();
-    const pagesToExtract = Math.min(numPagesToExtract, totalPages); // <-- Use numPagesToExtract here
 
     for (let i = 0; i < totalPages; i++) {
       const [copiedPage] = await (i < pagesToExtract ? extractedPdf : remainingPdf).copyPages(pdfDoc, [i]);
@@ -52,11 +58,11 @@ function App() {
       )}
       {extractedLink && (
         <div>
-          <a href={extractedLink} download="extracted_pages.pdf">
-            Download Extracted Pages
+          <a href={extractedLink} download="fragment.pdf">
+            Download Fragment
           </a>
-          <a href={remainingLink} download="remaining_pages.pdf">
-            Download Remaining Pages
+          <a href={remainingLink} download="whole.pdf">
+            Download Whole
           </a>
         </div>
       )}
